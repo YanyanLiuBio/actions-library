@@ -30,13 +30,14 @@ jobs:
         with:
           images: ${{ secrets.DOCKER_USERNAME }}/${{ inputs.image_name }}
           tags: |
-            # Tag with the branch name (e.g., main)
-            type=ref,event=branch
-            # Tag with the git tag (e.g., v1.0.1)
+            # 1. Combined Tag (e.g., v1.1-sha-7b3f12a)
+            # This uses 'type=match' to safely extract the tag name from the git ref
+            type=raw,value=${{ github.ref_name }}-sha-{{sha}},enable=${{ startsWith(github.ref, 'refs/tags/') }}
+            
+            # 2. Simple version tag (e.g., v1.1)
             type=ref,event=tag
-            # Tag with the short commit SHA (e.g., sha-ad44023)
-            type=sha
-            # Always update 'latest' on the default branch
+            
+            # 3. Latest tag on main
             type=raw,value=latest,enable={{is_default_branch}}
 
       - name: Set up Docker Buildx
