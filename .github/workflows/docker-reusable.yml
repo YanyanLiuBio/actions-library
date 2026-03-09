@@ -32,7 +32,7 @@ jobs:
           tags: |
             # 1. Combined Tag (e.g., v1.1-sha-7b3f12a)
             # This uses 'type=match' to safely extract the tag name from the git ref
-            type=raw,value=${{ github.ref_name }}-sha-{{sha}},enable=${{ startsWith(github.ref, 'refs/tags/') }}
+            type=match,pattern=v(.*),group=1,suffix=-sha-{{sha}},enable=${{ startsWith(github.ref, 'refs/tags/v') }}
             
             # 2. Simple version tag (e.g., v1.1)
             type=ref,event=tag
